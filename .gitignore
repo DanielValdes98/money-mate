@@ -1,0 +1,14 @@
+# Archivos de entorno virtual
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Configuración local y claves
+credentials.env
+
+# Archivos de entorno de FastAPI
+.env
+
+# Archivos de logs
+*.log
