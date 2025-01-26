@@ -21,73 +21,79 @@ async def webhook_test():
 
 @router.post("/webhook")
 async def whatsapp_webhook(request: Request, db: Session = Depends(get_db)):
-    # Parsear el JSON recibido del webhook
-    data = await request.json()
-
-    # Testing: Imprimir los datos que llegan al webhook en la consola
-    print("\n--- Data (Webhook - Glitch) ---")
-    print(f"Data: {data}")
-    print("-----------------------------------\n")
-    
     try:
-        # Extraer el valor de "messages" de la estructura
-        entry = data.get("entry", [])[0]
+        # Parsear el JSON recibido del webhook
+        data = await request.json()
+
+        # Validar estructura del webhook
+        if "entry" not in data or not data["entry"]:
+            raise HTTPException(status_code=400, detail="Estructura del webhook inválida")
+
+        # Extraer datos relevantes
+        entry = data["entry"][0]
         changes = entry.get("changes", [])[0]
         value = changes.get("value", {})
         messages = value.get("messages", [])
 
-        # Validar si hay mensajes en la estructura
         if not messages:
-            raise HTTPException(status_code=400, detail="No se recibieron mensajes")
+            return {"status": "ignored", "message": "Evento sin mensajes, no procesado"}
 
-        # Extraer los campos relevantes del primer mensaje
+        # Procesar mensaje
         message = messages[0]
-        user_phone = message.get("from")  # Número de teléfono del remitente
-        message_text = message.get("text", {}).get("body")  # Texto del mensaje
+        user_phone = message.get("from")
+        message_text = message.get("text", {}).get("body")
+
+        if not user_phone or not message_text:
+            raise HTTPException(
+                status_code=400,
+                detail="Estructura del mensaje incompleta. Falta 'from' o 'body'."
+            )
 
         # Verificar si el usuario ya existe en la base de datos
         user = db.query(User).filter(User.phone_number == user_phone).first()
-
         if not user:
-            # Responder indicando que el usuario no está registrado
             return {
                 "status": "error",
                 "message": "Usuario no registrado. Por favor registre el número antes de realizar transacciones.",
                 "phone_number": user_phone,
             }
 
-        # *** Aquí puedes descomentar la lógica para clasificar y registrar transacciones si es necesario ***
-        # classification, category_id, amount, description = classify_message(message_text, db)
-        # transaction = Transaction(
-        #     user_id=user.id,
-        #     category_id=category_id,
-        #     amount=amount,
-        #     description=description,
-        #     type=classification,
-        #     created_at=datetime.utcnow(),
-        # )
-        # db.add(transaction)
-        # db.commit()
+        # Intentar clasificar el mensaje con OpenAI
+        try:
+            classification, category_id, amount, description = classify_message(message_text, db)
+        except Exception as e:
+            # Manejar errores en la respuesta de OpenAI
+            print(f"Error al llamar a OpenAI: {e}")
+            return {
+                "status": "error",
+                "message": "No se pudo clasificar el mensaje. Por favor asegúrese de que contenga información relevante.",
+            }
 
-        # Para pruebas: Mostrar los datos en consola
-        print("\n--- Datos deserializados ---")
+        # Registrar la transacción
+        transaction = Transaction(
+            user_id=user.id,
+            category_id=category_id,
+            amount=amount,
+            description=description,
+            type=classification,
+            created_at=datetime.utcnow(),
+        )
+        db.add(transaction)
+        db.commit()
+
+        print("\n--- Datos procesados correctamente ---")
         print(f"Teléfono del usuario: {user_phone}")
         print(f"Mensaje de texto: {message_text}")
         print("-----------------------------------\n")
 
-        return {"status": "success", "message": "Datos procesados correctamente"}
+        return {"status": "success", "message": "Transacción registrada"}
 
-    except IntegrityError as e:
-        # Manejo de errores relacionados con la base de datos
-        db.rollback()
-        print(f"Error de integridad de la base de datos: {e}")
-        raise HTTPException(
-            status_code=500, detail="Error al registrar la transacción"
-        )
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        # Manejo genérico de excepciones
-        print(f"Error al procesar la solicitud: {e}")
+        # Manejo genérico de errores
+        print(f"Error inesperado: {e}")
         raise HTTPException(
-            status_code=500, detail="Ocurrió un error al procesar la solicitud"
+            status_code=500,
+            detail="Ocurrió un error inesperado al procesar la solicitud."
         )
-
