@@ -4,11 +4,28 @@ __pycache__/
 *.pyc
 *.pyo
 
-# Configuración local y claves
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Configuración local y claves del backend
 credentials.env
 
-# Archivos de entorno de FastAPI
+# Archivos de entorno de FastAPI y Next.js
+.env*.local
 .env
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
 
 # Archivos de logs
 *.log
+
+# node_modules
+node_modules/
+

@@ -1,9 +1,6 @@
 import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models.transaction import Transaction
-from models.user import User
-from models.category import Category
 import os
 from dotenv import load_dotenv
 
@@ -30,3 +27,11 @@ sqlalchemy_logger.addHandler(console_handler)  # Agregar el handler al logger
 # Configurar la conexión a PostgreSQL
 engine = create_engine(DATABASE_URL, pool_pre_ping=True, echo=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Función para obtener una sesión de base de datos
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

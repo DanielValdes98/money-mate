@@ -1,7 +1,10 @@
 from fastapi import APIRouter, Request, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from db import SessionLocal, Transaction, User
+from db import SessionLocal
+from models.transaction import Transaction
+from models.user import User
+
 from utils import parse_gpt_response
 from services.openai_service import classify_message
 from datetime import datetime
