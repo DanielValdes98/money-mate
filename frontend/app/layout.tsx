@@ -7,6 +7,7 @@ import {
   SignedOut,
   UserButton
 } from '@clerk/nextjs'
+import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css";
 
 const geistSans = Geist({
@@ -35,24 +36,20 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    // <ClerkProvider>
-    //   <html lang="es">
-    //     <body>
-    //       <SignedOut>
-    //         <SignInButton />
-    //       </SignedOut>
-    //       <SignedIn>
-    //         <UserButton />
-    //       </SignedIn>
-    //       {children}
-    //     </body>
-    //   </html>
-    // </ClerkProvider>
-
     <ClerkProvider>
-    <html lang="en">
-      <body>{children}</body>
-    </html>
+      {/* Aplicar el tema inicial en el servidor */}
+      <html lang="en" suppressHydrationWarning>
+        <body className={notoSansDisplay.className}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </body>
+      </html>
     </ClerkProvider>
   )
 }
