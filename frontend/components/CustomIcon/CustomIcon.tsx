@@ -1,7 +1,7 @@
 import React from 'react'
 import { CustomIconProps } from './CustomIcon.types'
 
-export default function CustomIcon(props: CustomIconProps) {
+export function CustomIcon(props: CustomIconProps) {
     const { icon: Icon } = props;
 
     // Renderiza un icono personalizado

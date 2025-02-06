@@ -5,7 +5,7 @@ import React from 'react'
 export default function LayoutDashboard({ children } : { children: React.ReactElement}) {
     return (
         <div className='flex w-full h-full'>
-            <div className='hidden xl:block w-80 h-full xl:fixed bg-gray-100'>
+            <div className='hidden xl:block w-80 h-full xl:fixed'>
                 <Sidebar />
             </div>
             
