@@ -28,12 +28,10 @@ export function HeaderCompanies() {
         <DialogContent className="sm:max-w-[625px]">
           <DialogHeader>
             <DialogTitle>Crear empresa</DialogTitle>
-            <DialogDescription>
-              Crea y configure su cliente
-            </DialogDescription>
+            <DialogDescription>Crea y configure su cliente</DialogDescription>
           </DialogHeader>
 
-          <FormCreateCustomer />
+          <FormCreateCustomer setOpenModalCreate={setOpenModalCreate} />
         </DialogContent>
       </Dialog>
     </div>

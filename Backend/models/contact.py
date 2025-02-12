@@ -18,3 +18,4 @@ class Contact(Base):
 
     user = relationship("User", back_populates="contacts")
     company = relationship("Company", back_populates="contacts")
+

@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -27,40 +28,60 @@ import {
 } from "@/components/ui/select";
 import { UploadButton } from "@/utils/uploadthing";
 import { toast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
+  clerk_user_id: z.string(),
   name: z.string(),
+  description: z.string(),
   country: z.string().min(2),
   website: z.string().min(2),
   phone: z.string().min(6),
-  nif: z.string().min(6),
-  profileImage: z.string()
+  nit: z.string().min(6),
+  profile_image: z.string(),
 });
 
 export function FormCreateCustomer(props: FormCreateCustomerProps) {
   const { setOpenModalCreate } = props;
+  const router = useRouter();
   const [photoUploaded, setPhotoUploaded] = useState(false);
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      clerk_user_id: "",
       name: "",
+      description: "",
       country: "",
       website: "",
       phone: "",
-      nif: "",
-      profileImage: "",
+      nit: "",
+      profile_image: "",
     },
-  })
+  });
 
   const { isValid } = form.formState;
 
   // 2. Define a submit handler.
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
+
+    try {
+      const response = await axios.post("/api/company", values);
+      console.log("Response from API:", response.data);
+
+      toast({ title: "Empresa creada correctamente" });
+      router.refresh();
+      setOpenModalCreate(false);
+    } catch (error) {
+      console.error("API Error:", error);
+
+      toast({
+        title: "Error al crear la empresa",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -151,10 +172,10 @@ export function FormCreateCustomer(props: FormCreateCustomerProps) {
 
             <FormField
               control={form.control}
-              name="nif"
+              name="nit"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>NIF</FormLabel>
+                  <FormLabel>NIT</FormLabel>
                   <FormControl>
                     <Input placeholder="0123456789" type="number" {...field} />
                   </FormControl>
@@ -165,7 +186,7 @@ export function FormCreateCustomer(props: FormCreateCustomerProps) {
 
             <FormField
               control={form.control}
-              name="profileImage"
+              name="profile_image"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Imagen</FormLabel>
@@ -175,20 +196,20 @@ export function FormCreateCustomer(props: FormCreateCustomerProps) {
                     ) : (
                       <UploadButton
                         className="rounded-lg bg-slate-600/20 text-slate-800 outline-dotted outline-3"
-                        {... field}
+                        {...field}
                         endpoint="profileImage"
                         onClientUploadComplete={(res) => {
-                          form.setValue("profileImage", res?.[0].url);
+                          form.setValue("profile_image", res?.[0].url);
                           toast({
-                            title: "Imagen subida correctamente"
-                          })
+                            title: "Imagen subida correctamente",
+                          });
                           setPhotoUploaded(true);
                         }}
                         onUploadError={(error: Error) => {
                           console.log(error);
                           toast({
-                            title: "Error al subir la imagen"
-                          })
+                            title: "Error al subir la imagen",
+                          });
                         }}
                       />
                     )}
@@ -199,7 +220,9 @@ export function FormCreateCustomer(props: FormCreateCustomerProps) {
             />
           </div>
 
-          <Button type="submit" disabled={!isValid}>Guardar</Button>
+          <Button type="submit" disabled={!isValid}>
+            Guardar
+          </Button>
         </form>
       </Form>
     </div>

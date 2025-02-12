@@ -19,5 +19,7 @@ class Company(Base):
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now(), nullable=False)
 
     user = relationship("User", back_populates="companies")
-    contacts = relationship("Contact", back_populates="companies", cascade="all, delete, delete-orphan")
-    events = relationship("Event", back_populates="companies", cascade="all, delete, delete-orphan")
+    contacts = relationship("Contact", back_populates="company", cascade="all, delete, delete-orphan")
+    events = relationship("Event", back_populates="company", cascade="all, delete, delete-orphan")
+
+

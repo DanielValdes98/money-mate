@@ -100,3 +100,63 @@ async def whatsapp_webhook(request: Request, db: Session = Depends(get_db)):
             status_code=500,
             detail="Ocurrió un error inesperado al procesar la solicitud."
         )
+
+@router.post("/auth/clerk-webhook")
+async def clerk_webhook(request: Request, db: Session = Depends(get_db)):
+    """
+    Recibe eventos de Clerk (user.created y user.updated) y sincroniza con la base de datos.
+    """
+    try:
+        payload = await request.json()
+        print(f"[CLERK_WEBHOOK] Payload recibido: {payload}")  # Para depuración
+
+        event_type = payload.get("type")
+        data = payload.get("data")
+
+        if not data:
+            raise HTTPException(status_code=400, detail="Invalid Clerk user data")
+
+        clerk_user_id = data.get("id")
+        first_name = data.get("first_name", "")
+        last_name = data.get("last_name", "")
+        name = f"{first_name} {last_name}".strip()
+
+        # Extraer email
+        email = data["email_addresses"][0]["email_address"] if data.get("email_addresses") else None
+
+        # Extraer número de teléfono
+        phone_number = data["phone_numbers"][0]["phone_number"] if data.get("phone_numbers") else None
+
+        if not clerk_user_id:
+            raise HTTPException(status_code=400, detail="Invalid Clerk user ID")
+
+        # Verificar si el usuario ya existe por email o clerk_user_id
+        existing_user = db.query(User).filter(
+            (User.clerk_user_id == clerk_user_id) | (User.email == email)
+        ).first()
+
+        if existing_user:
+            # Si el usuario ya existe, actualizar sus datos
+            existing_user.clerk_user_id = clerk_user_id
+            existing_user.name = name or existing_user.name
+            existing_user.email = email or existing_user.email
+            existing_user.phone_number = phone_number or existing_user.phone_number
+            db.commit()
+            return {"message": "User updated successfully"}
+
+        else:
+            # Si no existe, crearlo
+            new_user = User(
+                clerk_user_id=clerk_user_id,
+                name=name or "Sin Nombre",
+                email=email,
+                phone_number=phone_number,
+            )
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
+            return {"message": "User created successfully"}
+
+    except Exception as e:
+        print(f"[CLERK_WEBHOOK] Error: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")

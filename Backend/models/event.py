@@ -17,3 +17,4 @@ class Event(Base):
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now(), nullable=False)
 
     company = relationship("Company", back_populates="events")
+
