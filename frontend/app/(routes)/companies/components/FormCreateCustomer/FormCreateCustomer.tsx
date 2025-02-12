@@ -199,11 +199,13 @@ export function FormCreateCustomer(props: FormCreateCustomerProps) {
                         {...field}
                         endpoint="profileImage"
                         onClientUploadComplete={(res) => {
-                          form.setValue("profile_image", res?.[0].url);
+                          form.setValue("profile_image", res?.[0].url, {
+                            shouldValidate: true,
+                          });
+                          setPhotoUploaded(true);
                           toast({
                             title: "Imagen subida correctamente",
                           });
-                          setPhotoUploaded(true);
                         }}
                         onUploadError={(error: Error) => {
                           console.log(error);
