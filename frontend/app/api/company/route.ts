@@ -38,3 +38,27 @@ export async function POST(req: Request) {
         return new NextResponse("Internal Error", { status: 500 });
     }
 }
+
+export async function GET() {
+    try {
+        const { userId } = await auth();
+        if (!userId) {
+            return NextResponse.redirect(new URL("/", process.env.NEXT_PUBLIC_BASE_URL));
+        }
+
+        const response = await fetch(`${process.env.BACKEND_URL_DEVELOP}/api/companies/user/${userId}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to get companies");
+        }
+
+        const responseData = await response.json();
+        return NextResponse.json(responseData);
+    } catch (error) {{
+        console.error("[COMPANY_ERROR]", error);
+        return new NextResponse("Internal Error", { status: 500 });
+    }}
+}

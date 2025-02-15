@@ -29,3 +29,8 @@ next-env.d.ts
 # node_modules
 node_modules/
 
+# Ignorar recursos gráficos cuyo nombre comienza con "logo"
+public/images/logo*
+
+
+
