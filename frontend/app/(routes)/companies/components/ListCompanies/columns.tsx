@@ -36,6 +36,7 @@ export const columns: ColumnDef<Company>[] = [
               width={80}
               height={80}
               className="object-contain w-full h-full"
+              unoptimized={true}
             />
           </div>
         </div>
