@@ -94,7 +94,7 @@ export const columns: ColumnDef<Company>[] = [
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Link
-                  href={`/company/${id}`}
+                  href={`/companies/${id}`}
                   className="flex items-center gap-2"
                 >
                   <Pencil className="w-4 h-4" />

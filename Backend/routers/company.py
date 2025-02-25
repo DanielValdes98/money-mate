@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from db import get_db
-from services.company_service import get_all_companies, create_company, get_companies_by_user_id
+from services.company_service import get_all_companies, create_company, get_companies_by_user_id, get_company_by_ID
 from dto.company_dto import CompanyCreate, CompanyResponse, CompanyDBCreate
 from models.user import User
 from typing import List
@@ -40,7 +40,6 @@ async def get_companies_by_clerk_user_id(clerk_user_id: str, db: Session = Depen
         logging.error("Error al obtener empresas:", exc_info=True)
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
-
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def add_company(company: CompanyCreate, db: Session = Depends(get_db)):
     try:
@@ -70,3 +69,33 @@ async def add_company(company: CompanyCreate, db: Session = Depends(get_db)):
     except Exception as e:
         logging.error("Error al crear la empresa:", exc_info=True)
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
+@router.get("/{company_id}/user/{clerk_user_id}", response_model=CompanyResponse)
+async def get_company_by_id(company_id: int, clerk_user_id: str, db: Session = Depends(get_db)):
+    try:
+        # Buscar el usuario por clerk_user_id
+        user = db.query(User).filter(User.clerk_user_id == clerk_user_id).first() # TODO: Se debe crear el servicio para user y modificar esta línea
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Buscar la empresa por id y user_id
+        company = get_company_by_ID(db, company_id, user.id)
+        if not company: 
+            raise HTTPException(status_code=404, detail="Company not found")
+
+        # Convertir la empresa a DTO CompanyResponse e incluir clerk_user_id
+        company_response = CompanyResponse(
+                **{
+                    **company.__dict__,
+                    "clerk_user_id": user.clerk_user_id,
+                    "profile_image": company.profile_image.strip() if (company.profile_image or "").strip() else None, 
+                }
+        )
+
+        logging.debug("\n\n📥📥📥 Company Response Data 📥📥📥 %s \n\n", company_response)
+        return company_response
+
+    except Exception as e:
+        logging.error("Error al obtener la empresa: ", exc_info=True)
+        raise HTTPException(status_code=500, detail = "Internal Server Error")
+
