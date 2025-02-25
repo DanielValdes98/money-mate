@@ -52,6 +52,10 @@ async def whatsapp_webhook(request: Request, db: Session = Depends(get_db)):
                 detail="Estructura del mensaje incompleta. Falta 'from' o 'body'."
             )
 
+        # Agregar '+' si no está presente
+        if user_phone and not user_phone.startswith("+"):
+            user_phone = "+" + user_phone
+            
         # Verificar si el usuario ya existe en la base de datos
         user = db.query(User).filter(User.phone_number == user_phone).first()
         if not user:
