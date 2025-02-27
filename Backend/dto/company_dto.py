@@ -14,7 +14,10 @@ class CompanyBase(BaseModel):
     website: Optional[str] = None
     created_at: Optional[datetime] = None
 
-class CompanyDBCreate(BaseModel):  # DTO solo con los campos que se guardan en la BD
+class CompanyCreate(CompanyBase):
+    pass
+
+class CompanyDB(BaseModel):  # DTO solo con los campos que se guardan en la BD
     user_id: int
     name: str
     description: Optional[str] = None
@@ -25,11 +28,9 @@ class CompanyDBCreate(BaseModel):  # DTO solo con los campos que se guardan en l
     website: Optional[str] = None
     created_at: Optional[datetime] = None
 
-class CompanyCreate(CompanyBase):
-    pass
+    class Config:
+        orm_mode = True
 
 class CompanyResponse(CompanyBase):
     id: int
 
-    class Config:
-        orm_mode = True

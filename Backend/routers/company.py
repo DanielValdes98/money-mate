@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from db import get_db
-from services.company_service import get_all_companies, create_company, get_companies_by_user_id, get_company_by_ID
-from dto.company_dto import CompanyCreate, CompanyResponse, CompanyDBCreate
+from services.company_service import get_all_companies, create_company, get_companies_by_user_id, get_company_by_ID, modify_company
+from dto.company_dto import CompanyCreate, CompanyResponse, CompanyDB
 from models.user import User
 from typing import List
 import logging
@@ -33,7 +33,7 @@ async def get_companies_by_clerk_user_id(clerk_user_id: str, db: Session = Depen
             for company in companies
         ]
 
-        logging.debug("\n\n📥📥📥 Response Data 📥📥📥 %s \n\n", response_data)
+        logging.debug("\n\n📥📥📥 response_data en get_companies_by_clerk_user_id 📥📥📥 %s \n\n", response_data)
         return response_data
 
     except Exception as e:
@@ -59,10 +59,10 @@ async def add_company(company: CompanyCreate, db: Session = Depends(get_db)):
         # Eliminar clerk_user_id porque la tabla `companies` no lo usa
         company_data.pop("clerk_user_id", None) 
 
-        logging.debug("\n\n\n📥📥📥 Datos procesados en company_data 📥📥📥 %s \n\n\n", company_data)
+        logging.debug("\n\n\n📥📥📥 company_data en add_company 📥📥📥 %s \n\n\n", company_data)
 
         # Servicio para crear la empresa
-        create_company(db, CompanyDBCreate(**company_data))
+        create_company(db, CompanyDB(**company_data))
 
         return {"message": "Company created successfully"}
 
@@ -92,10 +92,39 @@ async def get_company_by_id(company_id: int, clerk_user_id: str, db: Session = D
                 }
         )
 
-        logging.debug("\n\n📥📥📥 Company Response Data 📥📥📥 %s \n\n", company_response)
+        logging.debug("\n\n📥📥📥 company_response en get_company_by_id 📥📥📥 %s \n\n", company_response)
         return company_response
 
     except Exception as e:
         logging.error("Error al obtener la empresa: ", exc_info=True)
         raise HTTPException(status_code=500, detail = "Internal Server Error")
 
+@router.patch("/{company_id}/user/{clerk_user_id}", status_code=status.HTTP_200_OK)
+async def update_company(company_id: int, clerk_user_id: str, company: CompanyResponse, db: Session = Depends(get_db)):
+    try:
+        # Buscar el usuario por clerk_user_id
+        user = db.query(User).filter(User.clerk_user_id == clerk_user_id).first() # TODO: Se debe crear el servicio para user y modificar esta línea
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Buscar la empresa por id y user_id
+        company_db = get_company_by_ID(db, company_id, user.id)
+        if not company_db: 
+            raise HTTPException(status_code=404, detail="Company not found")
+
+        # Elimina clerk_user_id porque la tabla `companies` no lo usa
+        company_data = company.dict(exclude_unset=True, exclude={"created_at", "clerk_user_id"})
+
+        # Actualizar la empresa
+        logging.debug("\n\n📥📥📥 company_data en update_company 📥📥📥 %s \n\n", company_data)
+        updated = modify_company(db, company_id, CompanyDB(**company_data))
+        logging.debug("\n\n📥📥📥 updated in update_company 📥📥📥 %s \n\n", updated)
+
+        if not updated:
+            raise HTTPException(status_code=400, detail="Update failed")
+
+        return {"message": "Company updated successfully"}
+
+    except Exception as e:
+        logging.error("Error al actualizar la empresa:", exc_info=True)
+        raise HTTPException(status_code=500, detail="Internal Server Error")

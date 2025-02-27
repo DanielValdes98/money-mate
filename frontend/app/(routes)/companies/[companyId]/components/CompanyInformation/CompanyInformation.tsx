@@ -1,12 +1,13 @@
 import Image from "next/image";
 import { CompanyInformationProps } from "./CompanyInformation.types";
 import { User } from "lucide-react";
+import { CompanyForm } from "../CompanyForm";
 
 export function CompanyInformation(props: CompanyInformationProps) {
   const { company } = props;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-10">
+    <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-10 gap-y-4">
       <div className="rounded-lg bg-background shadow-md hover:shadow-lg p-4">
         <div>
           <Image
@@ -21,8 +22,8 @@ export function CompanyInformation(props: CompanyInformationProps) {
             height={50}
             className="mb-3 rounded-lg"
           />
-          {/* TODO: Company FORM */}
-          <p>Company Form</p>
+
+          <CompanyForm company={company} />
         </div>
       </div>
 
