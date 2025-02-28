@@ -33,7 +33,7 @@ export default async function CompanyIdPage({
   const company = await response.json();
 
   // DEBUG: Verificar que la empresa se cargó correctamente
-  console.log("Company data:", company);
+  // console.log("CompanyIdPage data company:", company);
 
   return (
     <div>

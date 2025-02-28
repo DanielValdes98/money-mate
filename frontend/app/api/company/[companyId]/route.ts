@@ -11,13 +11,12 @@ export async function PATCH(req: Request, { params }: { params: {companyId: stri
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        // Agregar el userId al request body
-        values.clerk_user_id = userId;
+        values.clerk_user_id = userId; // Agregar el userId al request body
 
-        // DEBUG: Verificar la estructura antes de enviarla al backend (SOLO PARA PROBAR QUÉ SE ESTÁ ENVIANDO, NO SE USA)
-        // return NextResponse.json({ debug: {...values} }); // Para inspeccionar en la respuesta
+        // DEBUG: Verificar la estructura antes de enviarla al backend
+        // console.log("[UPDATE COMPANY], values", values);
 
-        // Hacer la petición al backend
+        // Petición al backend
         const response = await fetch(`${process.env.BACKEND_URL_DEVELOP}/api/companies/${companyId}/user/${userId}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
@@ -28,12 +27,10 @@ export async function PATCH(req: Request, { params }: { params: {companyId: stri
             throw new Error("Failed to create company");
         }
 
-        const company = null;
-
-        return NextResponse.json(company);
+        return new NextResponse("Empresa actualizada", { status: 200 });
     }
     catch (error){
-        console.log("[COMPANY ID]", error);
+        console.log("[UPDATE COMPANY ERROR]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }
