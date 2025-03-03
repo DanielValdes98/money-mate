@@ -3,6 +3,7 @@ import { CompanyInformationProps } from "./CompanyInformation.types";
 import { User } from "lucide-react";
 import { CompanyForm } from "../CompanyForm";
 import { NewContact } from "../NewContact";
+import { ListContacts } from "../ListContacts";
 
 export function CompanyInformation(props: CompanyInformationProps) {
   const { company } = props;
@@ -32,7 +33,7 @@ export function CompanyInformation(props: CompanyInformationProps) {
         <div className="flex items-center justify-between gap-x-2">
           <div className="flex items-center gap-x-2">
             <User className="w-5 h-5" />
-            Contacts
+            Contactos
           </div>
 
           <div>
@@ -40,7 +41,7 @@ export function CompanyInformation(props: CompanyInformationProps) {
           </div>
         </div>
 
-        <p>List contacts...</p>
+        <ListContacts company={company} />
       </div>
     </div>
   );

@@ -5,6 +5,9 @@ from dto.contact_dto import ContactCreate, ContactDB
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
+def get_contacts_by_company_id_service(db: Session, company_id: int):
+    return db.query(Contact).filter(Contact.company_id == company_id).all()
+
 def create_contact_service(db: Session, user_id: int, contact_data: ContactCreate):
     """
     Crea un contacto asociado a una empresa
@@ -30,3 +33,5 @@ def create_contact_service(db: Session, user_id: int, contact_data: ContactCreat
     except Exception as e:
         db.rollback()
         raise e
+
+

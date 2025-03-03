@@ -47,3 +47,13 @@ def modify_company(db: Session, company_id: int, company_data: CompanyDB):
     except:
         db.rollback()
         return False
+
+def delete_company_service(db: Session, company_id: int):
+    company = db.query(Company).filter(Company.id == company_id).first()
+    if not company:
+        return False
+    
+    db.delete(company)
+    db.commit()
+    return True
+    

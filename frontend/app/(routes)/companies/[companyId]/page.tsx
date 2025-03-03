@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { Header } from "./components/Header";
+import { FooterCompany } from "./components/FooterCompany";
 import { CompanyInformation } from "./components/CompanyInformation";
 // import { useEffect, useState } from "react";
 // import axios from "axios";
@@ -39,7 +40,7 @@ export default async function CompanyIdPage({
     <div>
       <Header />
       <CompanyInformation company={company} />
-      <p>Footer company</p>
+      <FooterCompany companyId={company.id} />
     </div>
   );
 }
