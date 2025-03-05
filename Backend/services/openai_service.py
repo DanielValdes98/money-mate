@@ -85,6 +85,17 @@ def classify_message(message_text, db: Session):
         category_id = category_names.get(category_name)
 
         return classification, category_id, amount, description
+    # except Exception as e:
+    #     print(f"Error al llamar a OpenAI: {e}")
+    #     raise e
+    except openai.error.OpenAIError as oe:
+        print(f"Error de OpenAI: {oe}")
+        raise ValueError("Error al llamar al modelo de OpenAI.")
+
+    except ValueError as ve:
+        print(f"Error de validación: {ve}")
+        raise ve
+
     except Exception as e:
-        print(f"Error al llamar a OpenAI: {e}")
-        raise e
+        print(f"Error inesperado: {e}")
+        raise RuntimeError("Ocurrió un error inesperado al clasificar el mensaje.")
