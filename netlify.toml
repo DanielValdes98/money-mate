@@ -4,6 +4,7 @@
   publish = ".next"
 
 [[redirects]]
-  from = "/*"
-  to = "/"
+  from = "/sign-in"
+  to = "/sign-in/"
   status = 200
+  force = true
