@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import { UserButton } from "@clerk/nextjs";
 import CardSummary from "./components/CardSummary/CardSummary";
 import { BookOpenCheck, UserRound, Waypoints } from "lucide-react";
@@ -8,7 +8,7 @@ import { SalesDistributor } from "./components/SalesDistributor";
 import { TotalSuscribers } from "./components/TotalSuscribers";
 import { ListIntegrations } from "./components/ListIntegrations";
 
-export const dataCards = [
+const dataCards = [
   {
     icon: UserRound,
     total: "12000",
@@ -55,7 +55,7 @@ export default function Home() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-x-20">
         {dataCards.map((card) => (
           <CardSummary
-            // key={card.title} 
+            // key={card.title}
             // icon={card.icon}
             // total={card.total}
             // average={card.average}
@@ -68,9 +68,9 @@ export default function Home() {
             // isPositive={card.isPositive}
 
             // Lo que se puede hacer es pasarle el objeto completo, es lo mismo que hacer lo de arriba
-            key={card.title} 
+            key={card.title}
             {...card}
-            />
+          />
         ))}
       </div>
 
@@ -86,5 +86,3 @@ export default function Home() {
     </div>
   );
 }
-
-        
