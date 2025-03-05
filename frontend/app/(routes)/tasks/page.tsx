@@ -1,10 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-import { Toast } from "@/components/ui/toast";
 import { toast } from "@/hooks/use-toast";
 import { Calendar } from "./components/Calendar";
-import { Event } from "@/models/event";
 
 export async function getCompanies(clerk_user_id: string) {
   try {

@@ -23,7 +23,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Toast } from "@/components/ui/toast";
 
 import { FormContactProps } from "./FormContact.types";
 import { formSchema } from "./FormContact.form";
@@ -63,6 +62,7 @@ export function FormContact(props: FormContactProps) {
         title: "Error al guardar el contacto",
         variant: "destructive",
       });
+      console.error("Error FormContact: ", error);
     }
   };
 

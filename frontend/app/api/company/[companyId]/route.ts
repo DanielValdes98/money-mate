@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-export async function PATCH(req: Request, { params }: { params: {companyId: string} }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{companyId: string}> }) {
     try {
         const { userId } = await auth();
         const { companyId } = await params;
@@ -35,7 +35,7 @@ export async function PATCH(req: Request, { params }: { params: {companyId: stri
     }
 }
 
-export async function DELETE(req: Request, { params }: { params: {companyId: number} }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{companyId: number}> }) {
     try {
         const { userId } = await auth();
         const { companyId } = await params;

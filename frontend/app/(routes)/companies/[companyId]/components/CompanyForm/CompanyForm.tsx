@@ -25,7 +25,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Toast } from "@/components/ui/toast";
 
 import { UploadButton } from "@/utils/uploadthing";
 
@@ -62,6 +61,7 @@ export function CompanyForm(props: CompanyFormProps) {
       router.refresh();
     } catch (error) {
       toast({ title: "Error al editar la empresa", variant: "destructive" });
+      console.error("Error CompanyForm:", error);
     }
   };
 
@@ -186,6 +186,7 @@ export function CompanyForm(props: CompanyFormProps) {
                         }}
                         onUploadError={(error: Error) => {
                           toast({ title: "Error al subir la imagen" });
+                          console.error("Upload error:", error);
                         }}
                       />
                     )}

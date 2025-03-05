@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-export async function DELETE(req: Request, { params }: { params: {eventId: number} }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{eventId: number}> }) {
     try {
         const { userId } = await auth();
         if (!userId) {

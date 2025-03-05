@@ -42,7 +42,7 @@ export async function GET() {
     try {
         const { userId } = await auth();
         if (!userId) {
-            return NextResponse.redirect(new URL("/", process.env.NEXT_PUBLIC_BASE_URL));
+            return new NextResponse("Unauthorized", { status: 401 });
         }
 
         const response = await fetch(`${process.env.BACKEND_URL_DEVELOP}/api/companies/user/${userId}`, {
@@ -63,33 +63,3 @@ export async function GET() {
     }}
 }
 
-export async function getCompanyById(req: Request){
-    try {
-        const { userId } = await auth();
-        if (!userId){
-            return NextResponse.redirect(new URL("/", process.env.NEXT_PUBLIC_BASE_URL));
-        }
-
-        const { searchParams } = new URL(req.url);
-        const companyId = searchParams.get("companyId");
-        if (!companyId){
-            throw new Error("Company ID is required");
-        }
-
-        const response = await fetch(`${process.env.BACKEND_URL_DEVELOP}/api/companies/${companyId}/user/${userId}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" }
-        });
-
-        if (!response.ok){
-            throw new Error("Failed to get company");
-        }
-
-        const responseData = await response.json();
-        return NextResponse.json(responseData);
-
-    } catch (error) {
-        console.error("[GET COMPANY BY ID]", error);
-        return new NextResponse("Internal Error", { status: 500 });
-    }
-}

@@ -8,8 +8,6 @@ import { columns } from "./columns";
 
 export function ListCompanies() {
   const [companies, setCompanies] = useState<Company[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -19,9 +17,6 @@ export function ListCompanies() {
         setCompanies(response.data);
       } catch (error) {
         console.error("Error fetching companies:", error);
-        setError("Error al cargar las empresas");
-      } finally {
-        setLoading(false);
       }
     };
 

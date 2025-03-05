@@ -3,13 +3,11 @@ import { redirect } from "next/navigation";
 import { Header } from "./components/Header";
 import { FooterCompany } from "./components/FooterCompany";
 import { CompanyInformation } from "./components/CompanyInformation";
-// import { useEffect, useState } from "react";
-// import axios from "axios";
 
 export default async function CompanyIdPage({
   params,
 }: {
-  params: { companyId: string };
+  params: Promise<{ companyId: string }>;
 }) {
   const { userId } = await auth();
   const { companyId } = await params;

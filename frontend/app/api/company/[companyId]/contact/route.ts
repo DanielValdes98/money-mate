@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 // No se está usando porque los contactos se obtienen usando Server Components
 // No se necesita un route.ts para obtener los contactos de la empresa
 // Se obtienen directamente en el componente ListContacts.tsx
-export async function GET(req: Request, { params }: { params: {companyId: string} }) {
+export async function GET(req: Request, { params }: { params: Promise<{companyId: string}> }) {
     try {
         const { companyId } = await params;
         const response = await fetch(`${process.env.BACKEND_URL_DEVELOP}/api/contacts/${companyId}/contacts`, {
@@ -25,7 +25,7 @@ export async function GET(req: Request, { params }: { params: {companyId: string
     }}
 }
 
-export async function POST(req: Request, { params }: { params: {companyId: string} }) {
+export async function POST(req: Request, { params }: { params: Promise<{companyId: string}> }) {
     try {
         const { companyId } = await params;
         const { userId } = await auth();

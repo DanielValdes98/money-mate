@@ -16,9 +16,7 @@ import axios from "axios";
 import { formatDate } from "@/lib/formatDate";
 
 import { CalendarProps } from "./Calendar.types";
-import { Toast } from "@/components/ui/toast";
 import { ModalAddEvent } from "../ModalAddEvent";
-import { start } from "repl";
 import { toast } from "@/hooks/use-toast";
 
 export function Calendar(props: CalendarProps) {
@@ -69,7 +67,7 @@ export function Calendar(props: CalendarProps) {
         })
         .catch((error) => {
           toast({ title: "Error al crear el evento", variant: "destructive" });
-          console.error(error);
+          console.error("Error al crear el evento: ", error);
         });
 
       setNewEvent({
@@ -99,6 +97,7 @@ export function Calendar(props: CalendarProps) {
           title: "Error al eliminar el evento",
           variant: "destructive",
         });
+        console.error("Error al eliminar el evento: ", error);
       }
     }
     console.log("Event clicked");

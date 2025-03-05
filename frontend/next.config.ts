@@ -1,22 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // eslint: {
+  //   ignoreDuringBuilds: true, // ✅ Ignorar errores de ESLint en el build
+  // },
   images: {
     remotePatterns: [
       {
         protocol: "https",
         hostname: "utfs.io",
-        pathname: "**"
-      }
-    ]
-  }
+        pathname: "**",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
-
-module.exports = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-};

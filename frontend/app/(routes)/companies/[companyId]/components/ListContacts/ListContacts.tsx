@@ -3,7 +3,6 @@ import { ListContactsProps } from "./ListContacts.types";
 import { Mail, Phone } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { auth } from "@clerk/nextjs/server";
-import { Toast } from "@/components/ui/toast";
 import { toast } from "@/hooks/use-toast";
 
 async function getContacts(companyId: number) {

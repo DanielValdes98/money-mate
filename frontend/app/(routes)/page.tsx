@@ -1,6 +1,3 @@
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { UserButton } from "@clerk/nextjs";
 import CardSummary from "./components/CardSummary/CardSummary";
 import { BookOpenCheck, UserRound, Waypoints } from "lucide-react";
 import { LastCustomers } from "@/app/(routes)/components/LastCustomers";
