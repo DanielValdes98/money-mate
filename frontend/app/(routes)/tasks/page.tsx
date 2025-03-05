@@ -6,7 +6,7 @@ import { toast } from "@/hooks/use-toast";
 import { Calendar } from "./components/Calendar";
 import { Event } from "@/models/event";
 
-async function getCompanies(clerk_user_id: string) {
+export async function getCompanies(clerk_user_id: string) {
   try {
     const response = await fetch(
       `${process.env.BACKEND_URL_DEVELOP}/api/companies/user/${clerk_user_id}`,
@@ -31,7 +31,7 @@ async function getCompanies(clerk_user_id: string) {
   }
 }
 
-async function getEvents(clerk_user_id: string) {
+export async function getEvents(clerk_user_id: string) {
   try {
     const response = await fetch(
       `${process.env.BACKEND_URL_DEVELOP}/api/events/user/${clerk_user_id}`,
