@@ -8,3 +8,9 @@
   to = "/sign-in/"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/sign-up"
+  to = "/sign-up/"
+  status = 200
+  force = true
